@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- HEADER -->
+<header class="top-header">
+  <button class="menu-btn" id="menuBtn">☰</button>
+  <div class="header-right">
+    <span class="welcome-text">Welcome, MICHEAL</span>
+    <img src="../assets/images/user.jpg" class="profile-pic">
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <h2 class="bank-name">NovaTrust</h2>
+
+  <a href="dashboard.html">Dashboard</a>
+  <a href="transfer.html">Transfers</a>
+  <a href="history.html">History</a>
+  <a href="credit-card.html">Credit Cards</a>
+  <a href="loans.html">Loans</a>
+  <a href="support.html">Support</a>
+  <a href="../index.html">Logout</a>
+</nav>
+
+  <title>Transaction Receipt</title>
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+</head>
+<body>
+
+<header class="top-header">
+  <h2>Transaction Receipt</h2>
+</header>
+
+<main class="main-content">
+
+  <div class="receipt-box">
+    <p><strong>Type:</strong> <span id="type"></span></p>
+    <p><strong>Amount:</strong> $<span id="amount"></span></p>
+    <p><strong>Status:</strong> <span id="status"></span></p>
+    <p><strong>Date:</strong> <span id="date"></span></p>
+  </div>
+
+  <a href="dashboard.html" class="btn">Back to Dashboard</a>
+
+</main>
+
+<script>
+const receipt = JSON.parse(localStorage.getItem("selectedReceipt"));
+
+if (receipt) {
+  document.getElementById("type").innerText = receipt.method;
+  document.getElementById("amount").innerText = receipt.amount;
+  document.getElementById("status").innerText = receipt.status;
+  document.getElementById("date").innerText = receipt.date;
+}
+</script>
+
+</body>
+</html>

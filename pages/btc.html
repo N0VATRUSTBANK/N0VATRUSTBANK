@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bitcoin Transfer | NovaTrust</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<style>
+body{
+  background:#f4f6f8;
+  font-family:Arial, sans-serif;
+}
+
+.page-wrapper{
+  margin-left:260px;
+  padding:40px;
+  display:flex;
+  justify-content:center;
+}
+
+.card{
+  background:#fff;
+  max-width:520px;
+  width:100%;
+  padding:32px;
+  border-radius:16px;
+  box-shadow:0 14px 35px rgba(0,0,0,.1);
+  position:relative;
+}
+
+.exit-btn{
+  position:absolute;
+  top:18px;
+  right:18px;
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:#eee;
+  text-align:center;
+  line-height:36px;
+  font-weight:bold;
+  text-decoration:none;
+  color:#444;
+}
+
+.exit-btn:hover{
+  color:#b31b1b;
+}
+
+h2{
+  text-align:center;
+  color:#b31b1b;
+  margin-bottom:6px;
+}
+
+.subtitle{
+  text-align:center;
+  color:#666;
+  font-size:14px;
+  margin-bottom:25px;
+}
+
+label{
+  font-size:13px;
+  font-weight:bold;
+  display:block;
+  margin-top:15px;
+}
+
+input, select{
+  width:100%;
+  padding:13px;
+  margin-top:6px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-size:14px;
+}
+
+.network{
+  background:#f9f9f9;
+  padding:12px;
+  border-radius:8px;
+  margin-top:8px;
+  font-size:13px;
+  color:#555;
+}
+
+button{
+  width:100%;
+  padding:15px;
+  margin-top:25px;
+  background:#b31b1b;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-weight:bold;
+  font-size:15px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#8f1515;
+}
+
+.warning{
+  background:#fff3cd;
+  color:#856404;
+  padding:12px;
+  border-radius:10px;
+  font-size:13px;
+  margin-top:20px;
+}
+
+.note{
+  margin-top:15px;
+  font-size:12px;
+  color:#777;
+  text-align:center;
+}
+
+.page-wrapper {
+  padding-top: 20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="top-header">
+  <button class="menu-btn" id="menuBtn">☰</button>
+  <span class="welcome-text">Bitcoin Transfer</span>
+</header>
+
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <h2 class="bank-name">NovaTrust</h2>
+  <a href="dashboard.html">Dashboard</a>
+  <a href="transfer.html">Transfers</a>
+  <a href="history.html">History</a>
+  <a href="../index.html">Logout</a>
+</nav>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+
+<!-- MAIN -->
+<main class="main-content">
+ <div class="page-wrapper">
+  <div class="card">
+
+    <a href="transfer.html" class="exit-btn">✕</a>
+
+    <h2>Send Bitcoin (BTC)</h2>
+    <div class="subtitle">
+      Secure cryptocurrency transfer
+    </div>
+
+    <label>Wallet Address</label>
+    <input id="wallet" placeholder="Enter BTC wallet address">
+
+    <label>Network</label>
+    <div class="network">
+      Bitcoin Network (BTC)
+    </div>
+
+    <label>Amount (BTC)</label>
+    <input id="amount" type="number" placeholder="0.0000">
+
+    <div class="warning">
+      ⚠ Bitcoin transfers are irreversible. Please verify the wallet address before submitting.
+    </div>
+
+    <button onclick="submitBTC()">
+      Submit BTC Transfer
+    </button>
+
+    <div class="note">
+      Transfers are reviewed and approved by an administrator before broadcast.
+    </div>
+
+  </div>
+</main>
+
+<script>
+const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+if (!loggedInUser) {
+  alert("Please login");
+  window.location.href = "../index.html";
+}
+
+function submitBTC(){
+  const wallet = document.getElementById("wallet").value;
+  const amount = Number(document.getElementById("amount").value);
+
+  if(!wallet || amount <= 0){
+    alert("Please enter valid BTC transfer details");
+    return;
+  }
+
+  const transfers = JSON.parse(localStorage.getItem("pendingTransfers")) || [];
+
+  transfers.push({
+    id: Date.now(),
+    userEmail: loggedInUser.email,
+    method: "Bitcoin",
+    recipient: wallet,
+    amount,
+    status: "Pending",
+    time: new Date().toLocaleString()
+  });
+
+  localStorage.setItem("pendingTransfers", JSON.stringify(transfers));
+
+  alert("Bitcoin transfer submitted for admin approval");
+  window.location.href = "dashboard.html";
+}
+</script>
+
+
+<!-- BANK DASHBOARD FOOTER -->
+<footer class="bank-footer">
+  <div class="footer-container">
+
+    <div class="footer-column">
+      <h3>NovaTrust Bank</h3>
+      <p>
+        Secure digital banking with advanced protection, real-time monitoring,
+        and global access.
+      </p>
+    </div>
+
+    <div class="footer-column">
+      <h4>Banking</h4>
+      <a href="dashboard.html">Accounts</a>
+      <a href="transfer.html">Transfers</a>
+      <a href="credit-card.html">Credit Cards</a>
+      <a href="loans.html">Loans</a>
+    </div>
+
+    <div class="footer-column">
+      <h4>Support</h4>
+      <a href="support.html">Help Center</a>
+      <a href="#">Report Fraud</a>
+      <a href="#">Security Center</a>
+      <a href="#">Contact Support</a>
+    </div>
+
+    <div class="footer-column">
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Electronic Disclosures</a>
+      <a href="#">Accessibility</a>
+    </div>
+
+  </div>
+
+<script>
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("sidebarOverlay");
+
+menuBtn.addEventListener("click", () => {
+  document.body.classList.toggle("sidebar-open");
+  overlay.classList.toggle("active");
+});
+
+overlay.addEventListener("click", () => {
+  document.body.classList.remove("sidebar-open");
+  overlay.classList.remove("active");
+});
+</script>
+
+  <div class="footer-bottom">
+    <p>
+      © 2009-2026 NovaTrust Bank. Member FDIC. Equal Housing Lender.
+    </p>
+    <p class="footer-security">
+      🔒 Protected by bank-grade encryption & fraud monitoring
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

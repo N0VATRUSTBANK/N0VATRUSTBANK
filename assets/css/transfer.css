@@ -1,0 +1,40 @@
+form {
+  max-width: 500px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+form label {
+  display: block;
+  margin-top: 12px;
+}
+
+form input, form select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px;
+  width: 100%;
+  background: #b31b1b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+}
+
+.review-box {
+  background: #fff;
+  padding: 20px;
+  max-width: 400px;
+  border-radius: 8px;
+}
+
+.secondary {
+  background: #ccc;
+  color: #000;
+  margin-top: 10px;
+}

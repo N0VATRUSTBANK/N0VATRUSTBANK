@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Transfers | NovaTrust</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+
+<style>
+/* =============================
+   HARD OVERRIDE (PERMANENT)
+   ============================= */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+}
+
+/* HEADER */
+.top-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: #b31b1b;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 0 16px;
+  z-index: 6000;
+}
+
+.menu-btn {
+  font-size: 26px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+/* SIDEBAR — FORCE CONTROL */
+
+
+/* MAIN CONTENT */
+.main-content {
+  padding-top: 80px;
+}
+
+.page-wrapper {
+  padding: 20px;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.tile {
+  background: #fff;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.08);
+  text-decoration: none;
+  color: #111;
+}
+
+
+
+.main-content {
+  padding-top: 80px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="top-header">
+  <button class="menu-btn" id="menuBtn">☰</button>
+  <span>Transfers</span>
+</header>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <h2 style="text-align:center;">NovaTrust</h2>
+  <a href="dashboard.html">Dashboard</a>
+  <a href="transfer.html" class="active">Transfers</a>
+  <a href="history.html">History</a>
+  <a href="../index.html">Logout</a>
+</nav>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- MAIN -->
+<main class="main-content">
+  <div class="page-wrapper">
+    <h2>Choose a transfer method</h2>
+
+    <div class="grid">
+      <a href="zelle.html" class="tile">Zelle®</a>
+      <a href="wire.html" class="tile">Wire Transfer</a>
+      <a href="ach.html" class="tile">ACH Transfer</a>
+      <a href="bills.html" class="tile">Pay Bills</a>
+      <a href="check.html" class="tile">Mobile Check</a>
+      <a href="btc.html" class="tile">Bitcoin</a>
+      <a href="internal-transfer.html" class="tile">Internal Transfer</a>
+      <a href="send-money.html" class="tile">Inter-Send</a>
+    </div>
+  </div>
+</main>
+
+<!-- JS — GUARANTEED -->
+
+
+<script>
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("sidebarOverlay");
+
+menuBtn.addEventListener("click", () => {
+  document.body.classList.toggle("sidebar-open");
+  overlay.classList.toggle("active");
+});
+
+overlay.addEventListener("click", () => {
+  document.body.classList.remove("sidebar-open");
+  overlay.classList.remove("active");
+});
+</script>
+</body>
+</html>

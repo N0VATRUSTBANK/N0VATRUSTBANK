@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Internal Transfer | NovaTrust</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+  <style>
+    body { background:#f4f6f8; font-family:Arial; }
+    .page-wrapper { margin-left:260px; padding:30px; }
+
+    .box {
+      max-width:480px;
+      background:#fff;
+      padding:30px;
+      border-radius:14px;
+      box-shadow:0 10px 25px rgba(0,0,0,.08);
+      margin:auto;
+      position:relative;
+    }
+
+    label {
+      font-size:13px;
+      font-weight:bold;
+      margin-top:15px;
+      display:block;
+    }
+
+    select, input {
+      width:100%;
+      padding:12px;
+      margin-top:6px;
+      border-radius:6px;
+      border:1px solid #ccc;
+    }
+
+    button {
+      width:100%;
+      margin-top:20px;
+      padding:14px;
+      background:#b31b1b;
+      color:white;
+      border:none;
+      border-radius:8px;
+      font-size:15px;
+      cursor:pointer;
+    }
+
+    /* EXIT BUTTON */
+    .exit-btn {
+      position: fixed;
+      top: 85px;
+      right: 25px;
+      width: 42px;
+      height: 42px;
+      background: white;
+      border-radius: 50%;
+      font-size: 22px;
+      font-weight: bold;
+      text-align: center;
+      line-height: 42px;
+      color: #555;
+      text-decoration: none;
+      box-shadow: 0 6px 18px rgba(0,0,0,.2);
+      z-index: 9999;
+    }
+
+    .exit-btn:hover {
+      background: #f2f2f2;
+      color: #b31b1b;
+    }
+
+    .page-wrapper {
+  padding-top: 20px;
+}
+  </style>
+</head>
+
+<body>
+
+<header class="top-header">
+  <button class="menu-btn" id="menuBtn">☰</button>
+  <span class="welcome-text">Internal Transfer</span>
+</header>
+
+<!-- EXIT -->
+<a href="transfer.html" class="exit-btn">✕</a>
+
+<nav class="sidebar">
+  <h2 class="bank-name">NovaTrust</h2>
+  <a href="dashboard.html">Dashboard</a>
+  <a href="transfer.html" class="active">Transfers</a>
+  <a href="history.html">History</a>
+  <a href="../index.html">Logout</a>
+</nav>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<main class="main-content">
+ <div class="page-wrapper">
+  <div class="box">
+    <h2>Transfer Between Accounts</h2>
+
+    <label>From Account</label>
+    <select id="from">
+      <option value="checking">Checking</option>
+      <option value="savings">Savings</option>
+    </select>
+
+    <label>To Account</label>
+    <select id="to">
+      <option value="savings">Savings</option>
+      <option value="checking">Checking</option>
+    </select>
+
+    <label>Amount</label>
+    <input type="number" id="amount" placeholder="Enter amount">
+
+
+    
+    <button onclick="doTransfer()">Transfer</button>
+  </div>
+</main>
+
+<script>
+const user = JSON.parse(localStorage.getItem("loggedInUser"));
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+if (!user) {
+  alert("Please login");
+  window.location.href = "../index.html";
+}
+
+let current = users.find(u => u.email === user.email);
+
+function doTransfer() {
+  const from = document.getElementById("from").value;
+  const to = document.getElementById("to").value;
+  const amount = Number(document.getElementById("amount").value);
+
+  if (from === to) return alert("Choose different accounts");
+  if (!amount || amount <= 0) return alert("Enter valid amount");
+
+  current.balance = Number(current.balance) || 0;
+  current.savings = Number(current.savings) || 0;
+
+  if (from === "checking" && current.balance < amount)
+    return alert("Insufficient checking balance");
+
+  if (from === "savings" && current.savings < amount)
+    return alert("Insufficient savings balance");
+
+  if (from === "checking") current.balance -= amount;
+  if (from === "savings") current.savings -= amount;
+
+  if (to === "checking") current.balance += amount;
+  if (to === "savings") current.savings += amount;
+
+  let history = JSON.parse(localStorage.getItem("transactionHistory")) || [];
+  history.unshift({
+    id: Date.now(),
+    userEmail: current.email,
+    method: "Internal Transfer",
+    recipient: `${from} → ${to}`,
+    amount: amount,
+    status: "Completed",
+    time: new Date().toLocaleString()
+  });
+
+  localStorage.setItem("users", JSON.stringify(users));
+  localStorage.setItem("loggedInUser", JSON.stringify(current));
+  localStorage.setItem("transactionHistory", JSON.stringify(history));
+
+  alert("Transfer successful");
+  window.location.href = "dashboard.html";
+}
+</script>
+
+<!-- BANK DASHBOARD FOOTER -->
+<footer class="bank-footer">
+  <div class="footer-container">
+
+    <div class="footer-column">
+      <h3>NovaTrust Bank</h3>
+      <p>
+        Secure digital banking with advanced protection, real-time monitoring,
+        and global access.
+      </p>
+    </div>
+
+    <div class="footer-column">
+      <h4>Banking</h4>
+      <a href="dashboard.html">Accounts</a>
+      <a href="transfer.html">Transfers</a>
+      <a href="credit-card.html">Credit Cards</a>
+      <a href="loans.html">Loans</a>
+    </div>
+
+    <div class="footer-column">
+      <h4>Support</h4>
+      <a href="support.html">Help Center</a>
+      <a href="#">Report Fraud</a>
+      <a href="#">Security Center</a>
+      <a href="#">Contact Support</a>
+    </div>
+
+    <div class="footer-column">
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Electronic Disclosures</a>
+      <a href="#">Accessibility</a>
+    </div>
+
+  </div>
+
+<script>
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("sidebarOverlay");
+
+menuBtn.addEventListener("click", () => {
+  document.body.classList.toggle("sidebar-open");
+  overlay.classList.toggle("active");
+});
+
+overlay.addEventListener("click", () => {
+  document.body.classList.remove("sidebar-open");
+  overlay.classList.remove("active");
+});
+</script>
+
+  <div class="footer-bottom">
+    <p>
+      © 2009-2026 NovaTrust Bank. Member FDIC. Equal Housing Lender.
+    </p>
+    <p class="footer-security">
+      🔒 Protected by bank-grade encryption & fraud monitoring
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

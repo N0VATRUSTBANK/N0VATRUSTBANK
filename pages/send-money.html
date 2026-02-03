@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Inter-Send | NovaTrust</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+
+<style>
+body {
+  background:#f4f6f8;
+  font-family:Arial, sans-serif;
+}
+
+/* ===== TRANSFER CARD ===== */
+.transfer-container {
+  max-width:480px;
+  margin:40px auto;
+  padding:0 15px;
+}
+
+.transfer-card {
+  background:#fff;
+  border-radius:18px;
+  padding:28px;
+  box-shadow:0 12px 30px rgba(0,0,0,.1);
+}
+
+.transfer-card h2 {
+  margin-bottom:6px;
+}
+
+.transfer-card p {
+  font-size:14px;
+  color:#666;
+  margin-bottom:20px;
+}
+
+label {
+  font-size:13px;
+  font-weight:bold;
+  color:#444;
+  display:block;
+  margin-bottom:6px;
+}
+
+input {
+  width:100%;
+  padding:14px;
+  margin-bottom:16px;
+  border-radius:12px;
+  border:1px solid #ccc;
+  font-size:14px;
+}
+
+input:focus {
+  outline:none;
+  border-color:#6d1ed4;
+  box-shadow:0 0 0 2px rgba(109,30,212,.15);
+}
+
+button {
+  width:100%;
+  padding:15px;
+  border:none;
+  border-radius:14px;
+  background:#6d1ed4;
+  color:#fff;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:hover {
+  background:#5b17b2;
+}
+
+.notice {
+  margin-top:16px;
+  font-size:13px;
+  color:#777;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<script src="../assets/js/auth-guard.js"></script>
+
+<!-- HEADER -->
+<header class="top-header">
+  <button class="menu-btn" id="menuBtn">☰</button>
+  <span class="welcome-text">Inter-send</span>
+</header>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <h2 class="bank-name">NovaTrust</h2>
+  <a href="dashboard.html">Dashboard</a>
+  <a class="active" href="transfer.html">Transfers</a>
+  <a href="history.html">History</a>
+  <a href="../index.html">Logout</a>
+</nav>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- MAIN -->
+<main class="main-content">
+  <div class="transfer-container">
+    <div class="transfer-card">
+
+      <h2>Send Money</h2>
+      <p>Send money instantly to another NovaTrust user.</p>
+
+      <label>Recipient Email</label>
+      <input id="recipient" type="email" placeholder="user@email.com">
+
+      <label>Amount</label>
+      <input id="amount" type="number" min="1" placeholder="Enter amount">
+
+      <button id="sendBtn">Send Money</button>
+
+      <div class="notice">
+        Transfers are processed instantly and cannot be reversed.
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script>
+/* ===== AUTH ===== */
+const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
+if (!currentUser) location.href = "../index.html";
+
+let users = JSON.parse(localStorage.getItem("users")) || [];
+let history = JSON.parse(localStorage.getItem("transactionHistory")) || [];
+
+/* ===== SEND MONEY ===== */
+document.getElementById("sendBtn").addEventListener("click", () => {
+
+  const recipientEmail = document.getElementById("recipient").value.trim().toLowerCase();
+  const amount = Number(document.getElementById("amount").value);
+
+  if (!recipientEmail || amount <= 0) {
+    alert("Please enter a valid recipient and amount.");
+    return;
+  }
+
+  const sender = users.find(u => u.email === currentUser.email);
+  const receiver = users.find(u => u.email === recipientEmail);
+
+  if (!receiver) {
+    alert("Recipient not found.");
+    return;
+  }
+
+  if (sender.email === receiver.email) {
+    alert("You cannot send money to yourself.");
+    return;
+  }
+
+  if (sender.balance < amount) {
+    alert("Insufficient balance.");
+    return;
+  }
+
+  /* ===== BALANCE UPDATE ===== */
+  sender.balance -= amount;
+  receiver.balance += amount;
+
+  const time = new Date().toLocaleString();
+  const id = Date.now();
+
+  /* ===== TRANSACTION HISTORY ===== */
+  history.unshift(
+    {
+      id,
+      userEmail: sender.email,
+      recipient: receiver.email,
+      method: "Inter-send",
+      amount,
+      status: "Completed",
+      direction: "Debit",
+      time
+    },
+    {
+      id,
+      userEmail: receiver.email,
+      recipient: sender.email,
+      method: "Inter-send",
+      amount,
+      status: "Completed",
+      direction: "Credit",
+      time
+    }
+  );
+
+  /* ===== SAVE ===== */
+  localStorage.setItem("users", JSON.stringify(users));
+  localStorage.setItem("transactionHistory", JSON.stringify(history));
+  localStorage.setItem("loggedInUser", JSON.stringify(sender));
+
+  alert("Transfer completed successfully.");
+
+  document.getElementById("recipient").value = "";
+  document.getElementById("amount").value = "";
+});
+</script>
+
+<script>
+/* ===== SIDEBAR TOGGLE ===== */
+const menuBtn = document.getElementById("menuBtn");
+const overlay = document.getElementById("sidebarOverlay");
+
+menuBtn.addEventListener("click", () => {
+  document.body.classList.toggle("sidebar-open");
+  overlay.classList.toggle("active");
+});
+
+overlay.addEventListener("click", () => {
+  document.body.classList.remove("sidebar-open");
+  overlay.classList.remove("active");
+});
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Transfer — Recurring</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+</head>
+<body>
+
+<header class="top-header">
+  <button class="menu-btn" id="menuBtn">☰</button>
+  <div class="header-right">
+    <span class="welcome-text">Recurring Transfers</span>
+    <img src="../assets/images/user.png" class="profile-pic">
+  </div>
+</header>
+
+<nav class="sidebar" id="sidebar">
+  <h2 class="bank-name">NovaTrust</h2>
+  <a href="dashboard.html">Dashboard</a>
+  <a href="transfer.html">Transfer</a>
+  <a href="history.html">History</a>
+</nav>
+
+<main class="main-content" id="mainContent">
+  <h1 class="section-title">Set Up Recurring Transfer</h1>
+  <div class="card">
+    <p>Schedule automatic recurring transfers between your accounts.</p>
+    <form>
+      <label>From Account</label>
+      <select>
+        <option>Checking</option>
+        <option>Savings</option>
+      </select>
+
+      <label>To Account</label>
+      <input type="text" placeholder="Recipient or account">
+
+      <label>Amount</label>
+      <input type="number" placeholder="$0.00">
+
+      <label>Frequency</label>
+      <select>
+        <option>Weekly</option>
+        <option>Monthly</option>
+        <option>Quarterly</option>
+      </select>
+
+      <button type="submit">Create Recurring Transfer</button>
+    </form>
+    <p><a href="transfer.html">← Back to Transfer Hub</a></p>
+  </div>
+</main>
+
+<script src="../assets/js/dashboard.js"></script>
+</body>
+</html>

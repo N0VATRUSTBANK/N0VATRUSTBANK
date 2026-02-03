@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Transaction History | NovaTrust</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+
+<style>
+body {
+  background:#f4f6f8;
+  font-family:Arial,sans-serif;
+}
+
+/* ===== PAGE ===== */
+.page-title {
+  font-size:22px;
+  font-weight:bold;
+  margin-bottom:20px;
+}
+
+.history-card {
+  background:#fff;
+  border-radius:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
+  overflow:hidden;
+}
+
+/* ===== FILTER BAR ===== */
+.history-header {
+  display:flex;
+  gap:10px;
+  padding:20px;
+  border-bottom:1px solid #eee;
+}
+
+.history-header input,
+.history-header select {
+  flex:1;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-size:14px;
+}
+
+/* ===== TABLE ===== */
+table {
+  width:100%;
+  border-collapse:collapse;
+}
+
+thead {
+  background:#111;
+  color:#fff;
+}
+
+th, td {
+  padding:14px;
+  font-size:14px;
+}
+
+tbody tr {
+  border-bottom:1px solid #eee;
+  cursor:pointer;
+}
+
+tbody tr:hover {
+  background:#f5f7ff;
+}
+
+.status {
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.completed { background:#e8f7ee; color:#1e7f43; }
+.pending { background:#fff4e5; color:#9c6a00; }
+.failed { background:#fdecea; color:#a11a1a; }
+
+.amount { font-weight:bold; }
+.credit { color:#1e7f43; }
+.debit { color:#b31b1b; }
+
+/* ===== EMPTY ===== */
+.empty {
+  padding:40px;
+  text-align:center;
+  color:#777;
+}
+
+/* ===== MOBILE ===== */
+.mobile-list { display:none; }
+
+.transaction-card {
+  background:#fff;
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:12px;
+  box-shadow:0 6px 20px rgba(0,0,0,.08);
+  cursor:pointer;
+}
+
+.transaction-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.transaction-meta {
+  font-size:12px;
+  color:#777;
+  margin-top:6px;
+}
+
+/* ===== MODAL ===== */
+.tx-modal {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  justify-content:center;
+  align-items:center;
+  z-index:5000;
+}
+
+.tx-box {
+  background:#fff;
+  width:420px;
+  max-width:90%;
+  padding:24px;
+  border-radius:16px;
+}
+
+.tx-box h3 { margin-bottom:10px; }
+.tx-box p { font-size:14px; line-height:1.6; }
+
+.tx-box button {
+  margin-top:15px;
+  width:100%;
+  padding:12px;
+  background:#6d1ed4;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-weight:bold;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  table { display:none; }
+  .mobile-list { display:block; }
+  .history-header { flex-direction:column; }
+}
+</style>
+</head>
+
+<body>
+
+<script src="../assets/js/auth-guard.js"></script>
+
+<!-- HEADER -->
+<header class="top-header">
+  <button class="menu-btn" id="menuBtn">☰</button>
+  <span class="welcome-text" id="welcomeText"></span>
+</header>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <h2 class="bank-name">NovaTrust</h2>
+  <a href="dashboard.html">Dashboard</a>
+  <a href="transfer.html">Transfers</a>
+  <a class="active" href="history.html">History</a>
+  <a href="credit-card.html">Credit Cards</a>
+  <a href="loans.html">Loans</a>
+  <a href="support.html">Support</a>
+  <a href="../index.html">Logout</a>
+</nav>
+
+<!-- MAIN -->
+<main class="main-content">
+
+<div class="page-title">Transaction History</div>
+
+<div class="history-card">
+
+  <div class="history-header">
+    <input id="search" placeholder="Search transactions">
+    <select id="filter">
+      <option value="">All</option>
+      <option value="debit">Withdrawals</option>
+      <option value="credit">Deposits</option>
+    </select>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Description</th>
+        <th>Method</th>
+        <th>Status</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody id="historyBody"></tbody>
+  </table>
+
+  <div class="mobile-list" id="mobileList"></div>
+
+  <div class="empty" id="empty" style="display:none">
+    No transactions found
+  </div>
+
+</div>
+
+</main>
+
+<!-- MODAL -->
+<div class="tx-modal" id="txModal">
+  <div class="tx-box">
+    <h3>Transaction Details</h3>
+    <p id="txDetails"></p>
+    <button onclick="closeTx()">Close</button>
+  </div>
+</div>
+
+<script src="../assets/js/dashboard.js"></script>
+
+<script>
+/* ===== AUTH ===== */
+const user = JSON.parse(localStorage.getItem("loggedInUser"));
+if(!user) location.href="../index.html";
+welcomeText.textContent = "Welcome, " + user.firstName;
+
+/* ===== NORMALIZE TRANSACTIONS ===== */
+let raw = JSON.parse(localStorage.getItem("transactionHistory")) || [];
+let history = raw
+  .filter(t => t.userEmail === user.email)
+  .map(t => ({
+    ...t,
+    type: t.type || "debit",
+    amount: Number(t.amount)
+  }));
+
+const body = document.getElementById("historyBody");
+const mobileList = document.getElementById("mobileList");
+const empty = document.getElementById("empty");
+const txModal = document.getElementById("txModal");
+const txDetails = document.getElementById("txDetails");
+
+/* ===== RENDER ===== */
+function render(list){
+  body.innerHTML = "";
+  mobileList.innerHTML = "";
+
+  if(list.length === 0){
+    empty.style.display="block";
+    return;
+  }
+  empty.style.display="none";
+
+  list.forEach(t=>{
+    const sign = t.type === "debit" ? "-" : "+";
+    const cls = t.type === "debit" ? "debit" : "credit";
+
+    const rowHTML = `
+      <tr onclick='openTx(${JSON.stringify(t)})'>
+        <td>${t.time}</td>
+        <td>${t.recipient}</td>
+        <td>${t.method}</td>
+        <td><span class="status ${t.status.toLowerCase()}">${t.status}</span></td>
+        <td class="amount ${cls}">${sign}$${t.amount.toLocaleString()}</td>
+      </tr>
+    `;
+
+    body.insertAdjacentHTML("beforeend", rowHTML);
+
+    mobileList.insertAdjacentHTML("beforeend", `
+      <div class="transaction-card" onclick='openTx(${JSON.stringify(t)})'>
+        <div class="transaction-row">
+          <strong>${t.recipient}</strong>
+          <span class="amount ${cls}">
+            ${sign}$${t.amount.toLocaleString()}
+          </span>
+        </div>
+        <div class="transaction-meta">
+          ${t.method} • ${t.time} • ${t.status}
+        </div>
+      </div>
+    `);
+  });
+}
+
+/* ===== MODAL ===== */
+function openTx(t){
+  txDetails.innerHTML = `
+    <strong>Recipient:</strong> ${t.recipient}<br>
+    <strong>Method:</strong> ${t.method}<br>
+    <strong>Type:</strong> ${t.type.toUpperCase()}<br>
+    <strong>Status:</strong> ${t.status}<br>
+    <strong>Amount:</strong> $${t.amount.toLocaleString()}<br>
+    <strong>Date:</strong> ${t.time}
+  `;
+  txModal.style.display="flex";
+}
+
+function closeTx(){
+  txModal.style.display="none";
+}
+
+/* ===== FILTER ===== */
+search.oninput = applyFilter;
+filter.onchange = applyFilter;
+
+function applyFilter(){
+  const q = search.value.toLowerCase();
+  const f = filter.value;
+
+  render(history.filter(t =>
+    (!f || t.type === f) &&
+    (t.recipient.toLowerCase().includes(q) ||
+     t.method.toLowerCase().includes(q))
+  ));
+}
+
+/* INIT */
+render(history);
+</script>
+
+</body>
+</html>

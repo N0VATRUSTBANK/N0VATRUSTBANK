@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Review Transfer | NovaTrust</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- DASHBOARD STYLE -->
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+
+  <style>
+    body {
+      background: #f4f6f8;
+      font-family: Arial, sans-serif;
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .review-card {
+      max-width: 520px;
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
+    .review-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .review-row:last-child {
+      border-bottom: none;
+    }
+
+    .label {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .value {
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .status {
+      color: #b31b1b;
+      font-weight: bold;
+    }
+
+    .actions {
+      margin-top: 25px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: #b31b1b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: #8f1515;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="top-header">
+  <button class="menu-btn" id="menuBtn">☰</button>
+  <div class="header-right">
+    <span class="welcome-text">Welcome, MICHEAL</span>
+    <img src="../assets/images/user.jpg" class="profile-pic">
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <h2 class="bank-name">NovaTrust</h2>
+
+  <a href="dashboard.html">Dashboard</a>
+  <a href="transfer.html" class="active">Transfers</a>
+  <a href="history.html">History</a>
+  <a href="credit-card.html">Credit Cards</a>
+  <a href="loans.html">Loans</a>
+  <a href="support.html">Support</a>
+  <a href="../index.html">Logout</a>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main-content" id="mainContent">
+
+  <div class="page-title">Review & Confirm Transfer</div>
+
+  <div class="review-card" id="reviewBox"></div>
+
+  <div class="actions">
+    <button class="btn-primary" id="confirmBtn">
+      Confirm Transfer
+    </button>
+  </div>
+
+</main>
+
+<!-- SIDEBAR JS -->
+<script src="../assets/js/dashboard.js"></script>
+
+<script>
+/* ===== REVIEW LOGIC (UNCHANGED) ===== */
+
+const transfers = JSON.parse(localStorage.getItem("pendingTransfers")) || [];
+const transfer = transfers[transfers.length - 1];
+
+if (!transfer) {
+  alert("No transfer found");
+  window.location.href = "transfer.html";
+}
+
+document.getElementById("reviewBox").innerHTML = `
+  <div class="review-row">
+    <span class="label">Transfer Method</span>
+    <span class="value">${transfer.method}</span>
+  </div>
+  <div class="review-row">
+    <span class="label">Recipient</span>
+    <span class="value">${transfer.recipient}</span>
+  </div>
+  <div class="review-row">
+    <span class="label">Bank / Email</span>
+    <span class="value">${transfer.bank}</span>
+  </div>
+  <div class="review-row">
+    <span class="label">Amount</span>
+    <span class="value">$${transfer.amount}</span>
+  </div>
+  <div class="review-row">
+    <span class="label">Status</span>
+    <span class="value status">${transfer.status}</span>
+  </div>
+`;
+
+document.getElementById("confirmBtn").onclick = function () {
+
+  transfer.status = "Pending";
+
+let transfers = JSON.parse(localStorage.getItem("pendingTransfers")) || [];
+transfers.push(transfer);
+
+localStorage.setItem("pendingTransfers", JSON.stringify(transfers));
+
+alert("Transfer submitted for admin approval");
+window.location.href = "dashboard.html";
+
+};
+</script>
+
+</body>
+</html>

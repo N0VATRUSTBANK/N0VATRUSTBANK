@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NovaTrust Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+</head>
+
+<body>
+  <script src="../assets/js/auth-guard.js"></script>
+
+<script>
+const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+
+if (!loggedInUser) {
+  alert("Please login to access your dashboard");
+  window.location.href = "../index.html";
+}
+
+if (loggedInUser.status !== "Approved") {
+  alert("Your account is not approved yet");
+  window.location.href = "../index.html";
+}
+</script>
+
+
+
+<header class="top-header">
+  <button class="menu-btn" id="menuBtn">☰</button>
+  <div class="header-right">
+    <span class="welcome-text">Welcome, MICHEAL</span>
+  </div>
+</header>
+<script>
+ 
+
+  if (loggedInUser) {
+    // Update welcome text
+    const welcomeText = document.querySelector(".welcome-text");
+    if (welcomeText && loggedInUser.firstName) {
+      welcomeText.textContent = `Welcome, ${loggedInUser.firstName}`;
+    }
+
+    // Update profile picture
+    const profilePic = document.querySelector(".profile-pic");
+    if (profilePic) {
+      profilePic.src = loggedInUser.profileImage 
+        ? loggedInUser.profileImage 
+        : "../assets/images/user.jpg";
+    }
+  }
+</script>
+
+
+<nav class="sidebar" id="sidebar">
+  <h2 class="bank-name">NovaTrust</h2>
+  <a href="dashboard.html">Dashboard</a>
+  <a href="transfer.html">Transfer</a>
+  <a href="history.html">History</a>
+  <a href="loans.html">Loans</a>
+  <a href="credit-card.html">Credit Card</a>
+  <a href="support.html">Customer Support</a>
+  <a href="../index.html">Logout</a>
+</nav>
+
+<div id="overlay"></div>
+
+<main class="main-content" id="mainContent">
+
+<section class="summary">
+  <div class="summary-box">
+    <p>Total Balance</p>
+    <h2 id="totalBalance">$0</h2>
+    <button onclick="toggleTotalBalance()">Hide / Show</button>
+  </div>
+
+  <div class="summary-box">
+    <p>Accounts</p>
+    <h2>2</h2>
+  </div>
+
+  <div class="summary-box">
+    <p>Last Login</p>
+    <h2>Today</h2>
+  </div>
+</section>
+
+<h1 class="section-title">Your Accounts</h1>
+
+<div class="cards">
+  <div class="card">
+    <h3>Checking Account</h3>
+    <p class="balance" id="checkingBalance">$0</p>
+    <button data-target="checkingBalance">Hide / Show</button>
+  </div>
+
+  <div class="card">
+    <h3>Savings Account</h3>
+    <p class="balance" id="savingsBalance">$0</p>
+    <button data-target="savingsBalance">Hide / Show</button>
+  </div>
+</div>
+
+<h1 class="section-title">Recent Activity</h1>
+<div class="activity" id="activityList"></div>
+
+</main>
+
+<script src="../assets/js/dashboard.js"></script>
+
+<script>
+let totalVisible = true;
+
+function toggleTotalBalance() {
+  const balanceEl = document.getElementById("totalBalance");
+  if (!balanceEl) return;
+
+  if (!balanceEl.dataset.value) {
+    balanceEl.dataset.value = balanceEl.innerText.replace("$", "");
+  }
+
+  totalVisible = !totalVisible;
+  balanceEl.innerText = totalVisible
+    ? "$" + balanceEl.dataset.value
+    : "••••••";
+}
+</script>
+
+
+<script>
+document.querySelectorAll("button[data-target]").forEach(btn => {
+  btn.onclick = function () {
+    const el = document.getElementById(this.dataset.target);
+    if (!el) return;
+
+    if (!el.dataset.value) {
+      el.dataset.value = el.innerText.replace("$", "");
+    }
+
+    el.innerText =
+      el.innerText === "••••••"
+        ? "$" + el.dataset.value
+        : "••••••";
+  };
+});
+</script>
+
+
+  
+
+  <div class="footer-bottom">
+    <p>
+      © 2009 - 2026 NovaTrust Bank. Member FDIC. Equal Housing Lender.
+    </p>
+    <p class="footer-security">
+      🔒 Protected by bank-grade encryption & fraud monitoring
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

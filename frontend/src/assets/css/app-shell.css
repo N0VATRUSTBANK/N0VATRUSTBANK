@@ -1,0 +1,201 @@
+/* ============================================================
+   APP SHELL + DESIGN TOKENS
+   Loads last so it cleanly overrides legacy rules in main.css /
+   dashboard.css. Defines design tokens consumed app-wide.
+   - Desktop (>=769px): sidebar permanent.
+   - Mobile  (<=768px): sidebar slides in via menu button.
+   ============================================================ */
+
+/* ---------- Design tokens ---------- */
+:root {
+  /* Brand */
+  --brand: #c41230;
+  --brand-strong: #a10f26;
+
+  /* Surfaces & ink */
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --ink: #0f172a;
+  --ink-soft: #475569;
+  --muted: #6b7280;
+  --border: #eef1f4;
+
+  /* Sidebar palette */
+  --sidebar-bg: #0f172a;
+  --sidebar-ink: #cbd5e1;
+  --sidebar-ink-strong: #ffffff;
+
+  /* Radii / elevation */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 4px 14px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 10px 25px rgba(15, 23, 42, 0.08);
+
+  /* Layout */
+  --sidebar-w: 240px;
+  --header-h: 60px;
+}
+
+/* ---------- Body baseline ---------- */
+body {
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------- Sidebar visual ---------- */
+.sidebar {
+  background: var(--sidebar-bg);
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.08);
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar .bank-name {
+  color: var(--sidebar-ink-strong);
+  margin: 0;
+  padding: 22px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar a {
+  display: block;
+  padding: 13px 22px;
+  color: var(--sidebar-ink);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border-bottom: none;
+  border-left: 3px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease,
+    border-left-color 0.15s ease;
+}
+
+.sidebar a:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--sidebar-ink-strong);
+}
+
+.sidebar a.router-link-active {
+  background: rgba(196, 18, 48, 0.18);
+  color: var(--sidebar-ink-strong);
+  border-left-color: var(--brand);
+}
+
+/* Logout pinned to bottom */
+.sidebar a:last-of-type {
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- Top header (mobile only) ---------- */
+.top-header {
+  background: var(--brand);
+}
+
+/* ---------- Sidebar user greeting ---------- */
+.sidebar .user-greeting {
+  padding: 14px 22px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar .greeting-label {
+  margin: 0;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.sidebar .greeting-name {
+  margin: 4px 0 0;
+  color: var(--sidebar-ink-strong);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* ---------- Desktop: permanent sidebar, no top header ---------- */
+@media (min-width: 769px) {
+  .sidebar {
+    left: 0;
+    width: var(--sidebar-w);
+  }
+
+  .top-header,
+  .menu-btn,
+  .sidebar-overlay {
+    display: none;
+  }
+
+  .main-content {
+    margin-left: var(--sidebar-w);
+    padding: 32px 40px;
+  }
+}
+
+/* ---------- Mobile: slide-in toggle + tighter padding ---------- */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 260px;
+    left: -260px;
+  }
+  .sidebar.active {
+    left: 0;
+  }
+  .main-content {
+    padding: 80px 16px 24px;
+  }
+}
+
+/* ---------- Forms (consistent across app pages) ---------- */
+.main-content input,
+.main-content select,
+.main-content textarea {
+  font-family: inherit;
+}
+
+.main-content input:focus,
+.main-content select:focus,
+.main-content textarea:focus,
+.main-content button:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* ---------- Auth pages: pull in tokens ---------- */
+.auth-box {
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+}
+
+.auth-box button {
+  background: var(--brand);
+}
+
+.auth-box button:hover:not(:disabled) {
+  background: var(--brand-strong);
+}
+
+.auth-box button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-error {
+  margin: 4px 0 12px;
+  padding: 10px 12px;
+  background: #fdecea;
+  color: #a11a1a;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  border: 1px solid #f5c2c0;
+}

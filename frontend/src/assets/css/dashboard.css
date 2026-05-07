@@ -1,0 +1,145 @@
+/* ============================================================
+   APP PAGE UTILITIES
+   Classes consumed by pages under /app (Dashboard.vue chiefly).
+   Tokens are defined in app-shell.css.
+   ============================================================ */
+
+/* ---------- Section title ---------- */
+.section-title {
+  margin: 32px 0 16px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Summary bar (Dashboard) ---------- */
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.summary-box {
+  background: var(--surface);
+  padding: 20px 22px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+
+.summary-box p {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 8px;
+}
+
+.summary-box h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.summary-box button {
+  width: auto;
+  margin-top: 12px;
+  padding: 6px 14px;
+  background: #f3f5f8;
+  color: var(--ink-soft);
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.summary-box button:hover {
+  background: #e7eaf0;
+}
+
+/* ---------- Account cards (Dashboard) ---------- */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: var(--surface);
+  padding: 22px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+
+.card h3 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.balance {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 6px 0 12px;
+  letter-spacing: -0.02em;
+}
+
+.card button {
+  width: auto;
+  padding: 8px 14px;
+  background: #f3f5f8;
+  color: var(--ink-soft);
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.card button:hover {
+  background: #e7eaf0;
+}
+
+/* ---------- Recent activity (Dashboard) ---------- */
+.activity {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 8px 22px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+
+.activity-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+
+.activity-row:last-child {
+  border-bottom: none;
+}
+
+/* ---------- Mobile spacing ---------- */
+@media (max-width: 768px) {
+  .summary,
+  .cards {
+    grid-template-columns: 1fr;
+  }
+  .section-title {
+    font-size: 1.1rem;
+    margin: 24px 0 12px;
+  }
+}
